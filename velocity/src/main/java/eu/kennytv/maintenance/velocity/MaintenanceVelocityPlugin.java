@@ -86,12 +86,12 @@ public final class MaintenanceVelocityPlugin extends MaintenanceProxyPlugin {
     private Favicon favicon;
 
     @Inject
-    public MaintenanceVelocityPlugin(final ProxyServer server, final org.slf4j.Logger logger, @DataDirectory final Path folder, final Metrics.Factory metricsFactory) {
+    public MaintenanceVelocityPlugin(final ProxyServer server, final org.slf4j.Logger logger, @DataDirectory final Path folder) {
         super(MaintenanceVersion.VERSION, ServerType.VELOCITY);
         this.server = server;
         this.logger = new LoggerWrapper(logger);
         this.dataFolder = folder.toFile();
-        metricsFactory.make(this, 16502);
+        //metricsFactory.make(this, 16502);
     }
 
     @Subscribe

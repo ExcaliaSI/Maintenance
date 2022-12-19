@@ -210,13 +210,15 @@ public final class SettingsProxy extends Settings {
     private Set<String> loadMaintenanceServersFromSQL() {
         final Set<String> maintenanceServers = new HashSet<>();
         mySQL.executeQuery(serverQuery, rs -> {
-            try {
-                while (rs.next()) {
-                    maintenanceServers.add(rs.getString("server"));
+            if (rs != null) {
+                try {
+                    while (rs.next()) {
+                        maintenanceServers.add(rs.getString("server"));
+                    }
+                } catch (final SQLException e) {
+                    plugin.getLogger().warning("An error occured while trying to get the list of single servers with maintenance!");
+                    e.printStackTrace();
                 }
-            } catch (final SQLException e) {
-                plugin.getLogger().warning("An error occured while trying to get the list of single servers with maintenance!");
-                e.printStackTrace();
             }
         });
         return maintenanceServers;
@@ -225,13 +227,15 @@ public final class SettingsProxy extends Settings {
     private boolean loadMaintenance() {
         final boolean[] databaseValue = {false};
         mySQL.executeQuery(maintenanceQuery, rs -> {
-            try {
-                if (rs.next()) {
-                    databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
+            if (rs != null) {
+                try {
+                    if (rs.next()) {
+                        databaseValue[0] = Boolean.parseBoolean(rs.getString("value"));
+                    }
+                } catch (final SQLException e) {
+                    plugin.getLogger().warning("An error occured while trying to get the maintenance value from the database!");
+                    e.printStackTrace();
                 }
-            } catch (final SQLException e) {
-                plugin.getLogger().warning("An error occured while trying to get the maintenance value from the database!");
-                e.printStackTrace();
             }
         }, "maintenance");
         return databaseValue[0];

@@ -82,7 +82,7 @@ public final class MySQL {
         }
     }
 
-    public void executeQuery(final String query, final Consumer<ResultSet> callback, final Object... objects) {
+    public void executeQuery(final String query, final Consumer<@Nullable ResultSet> callback, final Object... objects) {
         try (final Connection connection = hikariDataSource.getConnection()) {
             try (final PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 int current = 1;
@@ -93,7 +93,14 @@ public final class MySQL {
 
                 try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                     callback.accept(resultSet);
+                } catch (final Exception e) {
+                    logger.log(Level.SEVERE, "Error while executing query method: " + query);
+                    e.printStackTrace();
+                    callback.accept(null);
                 }
+            } catch (final Exception e) {
+                logger.log(Level.SEVERE, "Error while executing query method: " + query);
+                e.printStackTrace();
             }
         } catch (final SQLException e) {
             logger.log(Level.SEVERE, "Error while executing query method: " + query);
